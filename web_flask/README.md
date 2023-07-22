@@ -3,7 +3,7 @@
 
 ![Holberton School Image](https://s3.amazonaws.com/intranet-projects-files/concepts/74/hbnb_step3.png)
 
-The project __AirBnB Clone - Web Framework(Web flask)__ is part of the curriculum at ![ALX](ALX) and 
+The project __AirBnB Clone - Web Framework(Web flask)__ is part of the curriculum at [ALX](https://www.alxafrica.com//) and 
 it focuses on implementing a __web framework__ that handles `HTTP request and responses`, 
 `data storage`, and `user authentication`, among `other features`.
 This __framework__ will serve as the backbone for building the __web application__.
