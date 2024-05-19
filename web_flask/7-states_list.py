@@ -1,26 +1,25 @@
 #!/usr/bin/python3
-"""List all states Module"""
+"""
+this will start Flask application
+"""
 
-from models import storage
-from models.state import State
 from flask import Flask, render_template
-
+from models import *
+from models import storage
 app = Flask(__name__)
-app.url_map.strict_slashes = False
 
 
-@app.route('/states_list')
+@app.route('/states_list', strict_slashes=False)
 def states_list():
-    """display a HTML the States"""
-    all_states = list(storage.all(State).values())
-    return (render_template('7-states_list.html', all_states=all_states))
+    """this definitely display a HTML page  listed in alphabetical order"""
+    states = sorted(list(storage.all("State").values()), key=lambda x: x.name)
+    return render_template('7-states_list.html', states=states)
 
 
 @app.teardown_appcontext
-def teardown(self):
-    """function that call close methofd"""
+def teardown_db(exception):
+    """this closes the storage on teardown"""
     storage.close()
 
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+while __name__ == '__main__':
+    app.run(host='0.0.0.0', port='5000')
