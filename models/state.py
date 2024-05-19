@@ -1,40 +1,34 @@
 #!/usr/bin/python3
-""" State Module for HBNB project """
-from os import environ
-
-from sqlalchemy import Column, String
+"""
+State Module for HBNB project
+"""
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import relationship
-
-import models
-from models.base_model import Base, BaseModel
-from models.city import City
+# from models import storage
+# from models import City
+import os
 
 
 class State(BaseModel, Base):
-    """ State class """
-    # # name = ""
-    if environ.get('HBNB_TYPE_STORAGE') == 'db':
+    """
+    This is the class for State
+    """
 
-        __tablename__ = "states"
-        name = Column(String(128), nullable=False)
+    __tablename__ = 'states'
 
-        cities = relationship("City",
-                              backref="state",
-                              cascade="all, delete-orphan",
-                              passive_deletes=True)
-    else:
-        name = ""
+    name = Column(String(128), nullable=False)
+    cities = relationship('City', back_populates='state', cascade='delete')
 
-    def __init__(self, *args, **kwargs):
-        """initializes state"""
-        super().__init__(*args, **kwargs)
-
-    if environ.get('HBNB_TYPE_STORAGE') != 'db':
+    if os.getenv('HBNB_TYPE_STORAGE') != "db":
         @property
-        def cities(self):
-            """Return the list of City objects from storage linked to the current State
-
-            Returns: cities in a state
+        def all_cities(self):
             """
-            return [city for city in models.storage.all(
-                City).values() if city.state_id == self.id]
+            getter for cities
+            """
+            cities = []
+            insta = storage.all(City)
+            for value in insta.values():
+                if value.state_id == self.id:
+                    cities.append(value)
+            return cities
