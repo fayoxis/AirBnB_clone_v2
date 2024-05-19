@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""thisStarts a Flask web application.
+"""this Starts a Flask web application.
 """
 from models import storage
 from flask import Flask
