@@ -1,33 +1,40 @@
 #!/usr/bin/python3
-""" 0x02. AirBnB clone - MySQL, task 6. DBStorage - States and Cities """
+""" State Module for HBNB project """
+from os import environ
+
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from .city import City
-from .base_model import BaseModel, Base
-from os import getenv
+
+import models
+from models.base_model import Base, BaseModel
+from models.city import City
 
 
 class State(BaseModel, Base):
-    """Defines attributes for `State` as it inherits from `BaseModel`,
-    and ORM properties in relation to table `states`.
-    Attributes:
-        name (Column): name of state, string of max 128 chars
-        cities (relationship): one-to-many-association to `City`
-    """
-    __tablename__ = 'states'
-    name = Column(String(128), nullable=False)
-    cities = relationship("City", cascade="all, delete-orphan",
-                          backref="state")
+    """ State class """
+    # # name = ""
+    if environ.get('HBNB_TYPE_STORAGE') == 'db':
 
-    if getenv('HBNB_TYPE_STORAGE') != 'db':
+        __tablename__ = "states"
+        name = Column(String(128), nullable=False)
+
+        cities = relationship("City",
+                              backref="state",
+                              cascade="all, delete-orphan",
+                              passive_deletes=True)
+    else:
+        name = ""
+
+    def __init__(self, *args, **kwargs):
+        """initializes state"""
+        super().__init__(*args, **kwargs)
+
+    if environ.get('HBNB_TYPE_STORAGE') != 'db':
         @property
         def cities(self):
-            """ Getter for list of all `City` objects when in file storage
-            mode.
+            """Return the list of City objects from storage linked to the current State
+
+            Returns: cities in a state
             """
-            from . import storage
-            cities = []
-            for city in storage.all(City).values():
-                if city.state_id == self.id:
-                    cities.append(city)
-            return cities
+            return [city for city in models.storage.all(
+                City).values() if city.state_id == self.id]
